@@ -1,0 +1,29 @@
+//Fonction domaine / Domaine+
+
+Code pour requête : 
+= Table.AddColumn(Source, "Domaine_maj", each MàjDomaine([Domaine]))
+
+= (Domaine as any) => 
+let 
+    Domaine_corrigé = 
+		if      Domaine = "INDEMNISATION - MISE en OEUVRE des GARANTIES" then "INDEMNISATION"
+		else if	Domaine = "OUTILS ET MÉTIERS SUPPORT" 					then "OMS"
+		else if	Domaine = "HORS DOMAINES METIER" 					 	then "IT3D"
+		else if	Domaine = "OFFRE" 					 					then "OFFRE"
+		else if	Domaine = "RÉGLEMENTAIRE" 					 			then "Réglementaire"
+		else if	Domaine = "MULTI DOMAINES" 					 			then "Multi Domaines"
+		else if	Domaine = "CARDIF IARD" 					 			then "Cardif IARD"
+		else if	Domaine = "DATA" 					 					then "Data"
+		else if	Domaine = "EXPERIENCE CLIENT" 					 		then "Expérience Client"
+		else if	Domaine = "MGEFI - MATMUT - PSC" 					 	then "MGEFI"
+
+		else if	Domaine = "QDD" 				                 	 	then "QDD"
+
+
+		else if	Domaine = "HP" 										 	then "HP"
+		else if	Domaine = "TRANSVERSES - F&M"							then "TRANSVERSES - F&M"
+		else if	Domaine = "IT3D"										then "IT3D"
+		else Domaine
+
+in 
+   Domaine_corrigé
