@@ -1,7 +1,7 @@
 //Fonction domaine / Domaine+
 
 Code pour requête : 
-= Table.AddColumn(Source, "Domaine_maj", each MàjDomaine([Domaine]))
+= Table.AddColumn(Source, "Domaine+", each MàjDomaine([Domaine]))
 
 = (Domaine as any) => 
 let 
