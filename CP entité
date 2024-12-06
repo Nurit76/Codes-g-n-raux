@@ -1,0 +1,16 @@
+let
+    Source = Table.Combine({#"$$trk_Base Infos - PRJ"}),
+    #"Autres colonnes supprimées" = Table.SelectColumns(Source,{"dataobject_name", "$_$ChefsdeprojetsEntite"}),
+    #"Lignes filtrées1" = Table.SelectRows(#"Autres colonnes supprimées", each ([#"$_$ChefsdeprojetsEntite"] <> null)),
+    #"Fractionner la colonne par délimiteur" = Table.ExpandListColumn(Table.TransformColumns(#"Lignes filtrées1", {{"$_$ChefsdeprojetsEntite", Splitter.SplitTextByDelimiter(";", QuoteStyle.Csv), let itemType = (type nullable text) meta [Serialized.Text = true] in type {itemType}}}), "$_$ChefsdeprojetsEntite"),
+    #"Fractionner la colonne par délimiteur1" = Table.ExpandListColumn(Table.TransformColumns(#"Fractionner la colonne par délimiteur", {{"$_$ChefsdeprojetsEntite", Splitter.SplitTextByDelimiter(", ,", QuoteStyle.Csv), let itemType = (type nullable text) meta [Serialized.Text = true] in type {itemType}}}), "$_$ChefsdeprojetsEntite"),
+    #"Valeur remplacée" = Table.ReplaceValue(#"Fractionner la colonne par délimiteur1",",","",Replacer.ReplaceText,{"$_$ChefsdeprojetsEntite"}),
+    #"Valeur remplacée1" = Table.ReplaceValue(#"Valeur remplacée","DORTIGNAC DELPHINE ","DORTIGNAC DELPHINE",Replacer.ReplaceText,{"$_$ChefsdeprojetsEntite"}),
+    #"Requêtes fusionnées" = Table.NestedJoin(#"Valeur remplacée1",{"$_$ChefsdeprojetsEntite"},Ref_Personnes,{" Nom"},"Ref_Personnes",JoinKind.LeftOuter),
+    #"Ref_Personnes développé" = Table.ExpandTableColumn(#"Requêtes fusionnées", "Ref_Personnes", {" Équipe", " Sous-Équipe", " Entité"}, {" Équipe", " Sous-Équipe", " Entité"}),
+    #"Doublons supprimés2" = Table.Distinct(#"Ref_Personnes développé", {"dataobject_name"}),
+    #"Lignes filtrées" = Table.SelectRows(#"Doublons supprimés2", each ([#" Entité"] = "TRANSFORMATION DU SI")),
+    #"Colonnes supprimées" = Table.RemoveColumns(#"Lignes filtrées",{"$_$ChefsdeprojetsEntite", " Équipe", " Entité"}),
+    #"Doublons supprimés1" = Table.Distinct(#"Colonnes supprimées", {"dataobject_name"})
+in
+    #"Doublons supprimés1"
